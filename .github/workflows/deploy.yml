@@ -5,7 +5,7 @@ name: Build and Deploy Frontend
 on:
   push:
     branches:
-      - main  # or the branch you want to track
+      - master  # or the branch you want to track
 
 jobs:
   build-and-deploy:
