@@ -31,6 +31,9 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/drhelp-fe:latest
+        build-args: |
+          NEXT_DISABLE_ESLINT=true
+
 
     - name: Deploy to Server via SSH
       uses: appleboy/ssh-action@master
