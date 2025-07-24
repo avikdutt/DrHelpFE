@@ -27,8 +27,8 @@ jobs:
     - name: Build and push image
       uses: docker/build-push-action@v5
       with:
-        context: .
-        file: ./Dockerfile
+        context: ./DrHelpFE
+        file: ./DrHelpFE/Dockerfile
         push: true
         tags: your-dockerhub-username/drhelp-fe:latest
 
