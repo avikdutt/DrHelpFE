@@ -30,7 +30,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/drhelp-fe:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/drhelp-prd:latest
         build-args: |
           NEXT_DISABLE_ESLINT=true
 
@@ -42,8 +42,8 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/drhelp-dev:latest
-          docker stop drhelp-fe || true
-          docker rm drhelp-fe || true
-          docker run -d -p 3000:3000 -v ${PWD}:/app -v /app/node_modules --name drhelp-dev ${{ secrets.DOCKER_USERNAME }}/drhelp-dev:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/drhelp-prd:latest
+          docker stop drhelp-prd || true
+          docker rm drhelp-prd || true
+          docker run -d -p 3000:3000 -v ${PWD}:/app -v /app/node_modules --name drhelp-prd ${{ secrets.DOCKER_USERNAME }}/drhelp-prd:latest
         # docker run -d -p 3000:3000 --name drhelp-fe ${{ secrets.DOCKER_USERNAME }}/drhelp-fe:latest
