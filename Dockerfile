@@ -1,9 +1,31 @@
+# Stage 1: Build
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the code
+COPY . .
+
+# Build the Next.js app
+RUN npm run build
+
+# Stage 2: Run
 FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
+# Copy built app from builder
+COPY --from=builder /app ./
 
-# Skip build step and serve directly in dev mode
-CMD ["npm", "run", "dev"]
+# Install production dependencies only (optional)
+RUN npm install --omit=dev
+
+# Expose the port
+EXPOSE 3000
+
+# Start the app
+CMD ["npm", "start"]
