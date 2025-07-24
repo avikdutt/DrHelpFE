@@ -5,7 +5,7 @@ name: Build and Deploy Frontend
 on:
   push:
     branches:
-      - master  # or the branch you want to track
+      - master  # Change if using another branch
 
 jobs:
   build-and-deploy:
@@ -15,27 +15,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Docker
+    - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Login to DockerHub
+    - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push image
+    - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/drhelp-prd:latest
-        build-args: |
-          NEXT_DISABLE_ESLINT=true
 
-
-    - name: Deploy to Server via SSH
+    - name: Deploy to EC2 via SSH
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SERVER_HOST }}
@@ -45,5 +42,6 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/drhelp-prd:latest
           docker stop drhelp-prd || true
           docker rm drhelp-prd || true
-          docker run -d -p 3000:3000 -v ${PWD}:/app -v /app/node_modules --name drhelp-prd ${{ secrets.DOCKER_USERNAME }}/drhelp-prd:latest
-        # docker run -d -p 3000:3000 --name drhelp-fe ${{ secrets.DOCKER_USERNAME }}/drhelp-fe:latest
+          docker run -d -p 3000:3000 \
+            --name drhelp-prd \
+            ${{ secrets.DOCKER_USERNAME }}/drhelp-prd:latest
